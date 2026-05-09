@@ -822,9 +822,34 @@ function buildRadar(es){
 }
 
 async function salvarLead(d){
+  // 1. Salvar no Google Sheets
   var u='https://script.google.com/macros/s/AKfycbyHWaN1ds2ekbq4lgXAbZ67qT9AygbtPanlgSV5lvF4JfKN-Yr5hH9FX3zIH_1xz32eUQ/exec';
-  if(!u)return;
-  try{await fetch(u,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){console.warn('Sheets error:',e);}
+  if(u){try{await fetch(u,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){console.warn('Sheets error:',e);}}
+
+  // 2. Salvar no localStorage para integração com LUME Panel
+  try{
+    var leads = JSON.parse(localStorage.getItem('lume_leads')||'[]');
+    var exists = leads.findIndex(function(l){return l.email===d.email||l.whatsapp===d.whatsapp;});
+    var newLead = {
+      id: exists>=0 ? leads[exists].id : 'lead_'+Date.now(),
+      nome: d.nome,
+      empresa: d.empresa,
+      email: d.email,
+      whatsapp: d.whatsapp,
+      nicho: d.nicho,
+      score: d.score,
+      perfil: d.perfil,
+      potencial: d.potencial,
+      eixos: d.eixos||{},
+      date: new Date().toISOString(),
+      status: exists>=0 ? leads[exists].status : 'pending',
+      activationToken: exists>=0 ? leads[exists].activationToken : null,
+      tokenExpiry: exists>=0 ? leads[exists].tokenExpiry : null,
+    };
+    if(exists>=0){leads[exists]=newLead;}else{leads.push(newLead);}
+    localStorage.setItem('lume_leads', JSON.stringify(leads));
+    console.log('Lead salvo para integração LUME Panel:', d.nome);
+  }catch(e){console.warn('LocalStorage error:',e);}
 }
 function baixarPDF(){
   var btn=document.querySelector('.btn-pdf');if(!btn)return;
