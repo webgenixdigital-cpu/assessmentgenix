@@ -419,9 +419,14 @@ body::after {
             <h1>Olá, <span id="client-greeting">—</span> 👋</h1>
             <p id="client-subtitle">Acompanhe sua evolução na Metodologia LUME</p>
           </div>
-          <div style="text-align:right">
-            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Fase atual</div>
-            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--lume2)" id="client-phase-badge">—</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div style="text-align:right">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Fase atual</div>
+              <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--lume2)" id="client-phase-badge">—</div>
+            </div>
+            <button onclick="atualizarScoreManual()" style="padding:10px 18px;border-radius:12px;border:1.5px solid rgba(81,207,102,.3);background:rgba(81,207,102,.07);color:#51cf66;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px" id="btn-score-update">
+              📈 Atualizar Score
+            </button>
           </div>
         </div>
 
@@ -585,7 +590,10 @@ body::after {
             <h1>Dashboard LUME</h1>
             <p id="admin-date-label">Bem-vindo ao painel administrativo</p>
           </div>
-          <button class="btn-primary" onclick="showAdminPage('novo')">+ Novo Cliente</button>
+          <div style="display:flex;gap:10px">
+            <button onclick="recalcularTodosScores()" style="padding:10px 16px;border-radius:12px;border:1.5px solid rgba(81,207,102,.3);background:rgba(81,207,102,.07);color:#51cf66;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer">📈 Recalcular Scores</button>
+            <button class="btn-primary" onclick="showAdminPage('novo')">+ Novo Cliente</button>
+          </div>
         </div>
 
         <!-- KPI Row -->
@@ -974,16 +982,7 @@ function loadClientPanel(client) {
   },300);
 
   // Evo chart
-  var evoHtml = '';
-  var maxS = Math.max.apply(null,client.scoreHistory);
-  client.scoreHistory.forEach(function(s,i){
-    var h = Math.max(8, (s/maxS)*70);
-    var alpha = 0.4+((i/(client.scoreHistory.length-1))*0.6);
-    evoHtml+='<div class="evo-bar-wrap">'+
-      '<div class="evo-bar" style="height:'+h+'px;background:rgba(200,169,110,'+alpha+')"></div>'+
-      '<div class="evo-label">M'+(i+1)+'</div></div>';
-  });
-  document.getElementById('evo-chart').innerHTML = evoHtml;
+  buildEvoChart(client);
 
   // Next tasks
   var pending = client.checklist.filter(function(c){return !c.done;}).slice(0,3);
@@ -1009,7 +1008,78 @@ function getClientPhase(client) {
   return 'Fase 3 — Escala';
 }
 
-function buildMetas(client) {
+function atualizarScoreManual() {
+  if(!currentUser) return;
+  var btn = document.getElementById('btn-score-update');
+  if(btn) { btn.textContent = '⏳ Calculando...'; btn.disabled = true; }
+
+  setTimeout(function(){
+    var clients = getClients();
+    var client = clients.find(function(c){return c.id===currentUser.id;});
+    var novoScore = atualizarScoreCliente(client, clients);
+    currentUser = client;
+
+    // Atualiza ring
+    var fill = document.getElementById('client-ring');
+    if(fill) fill.style.strokeDashoffset = 289-(289*(novoScore/100));
+
+    // Anima contador
+    var el = document.getElementById('client-score-num');
+    if(el) {
+      var start = parseInt(el.textContent)||0;
+      var diff = novoScore - start;
+      var steps = 25; var step = 0;
+      var iv = setInterval(function(){
+        step++;
+        el.textContent = Math.round(start + (diff*(step/steps)));
+        if(step >= steps) clearInterval(iv);
+      }, 25);
+    }
+
+    // Atualiza nível
+    var nivel = NIVEL_LUME.find(function(n){return novoScore<=n.max;})||NIVEL_LUME[3];
+    var lvl = document.getElementById('client-level-badge');
+    if(lvl) lvl.textContent = nivel.label;
+
+    // Atualiza evolução chart
+    buildEvoChart(client);
+
+    // Mostra feedback
+    if(btn) {
+      btn.innerHTML = '✅ Score: '+novoScore;
+      btn.style.borderColor = 'rgba(81,207,102,.5)';
+      setTimeout(function(){
+        btn.innerHTML = '📈 Atualizar Score';
+        btn.style.borderColor = 'rgba(81,207,102,.3)';
+        btn.disabled = false;
+      }, 3000);
+    }
+  }, 600);
+}
+
+function buildEvoChart(client) {
+  var evoEl = document.getElementById('evo-chart');
+  if(!evoEl || !client.scoreHistory) return;
+  var maxS = Math.max.apply(null, client.scoreHistory.concat([100]));
+  var html = '';
+  client.scoreHistory.forEach(function(s,i){
+    var h = Math.max(8,(s/maxS)*70);
+    var alpha = 0.3+((i/(Math.max(client.scoreHistory.length-1,1)))*0.7);
+    html+='<div class="evo-bar-wrap">'+
+      '<div class="evo-bar" style="height:'+h+'px;background:rgba(28,143,236,'+alpha+')"></div>'+
+      '<div class="evo-label" style="font-size:10px;color:var(--muted)">'+s+'</div></div>';
+  });
+  evoEl.innerHTML = html;
+}
+
+// Admin: recalculate all client scores based on checklist
+function recalcularTodosScores() {
+  var clients = getClients();
+  clients.forEach(function(c){
+    atualizarScoreCliente(c, clients);
+  });
+  renderAdminDashboard();
+}
   var diasNoPrograma = Math.floor((Date.now()-new Date(client.startDate).getTime())/(24*60*60*1000));
   var phases = [
     {num:1,title:'Estrutura Base (0–30 dias)',items:[
@@ -1046,7 +1116,7 @@ function buildMetas(client) {
     '</div>';
   });
   document.getElementById('client-timeline').innerHTML = html;
-}
+
 
 function buildChecklist(client) {
   renderChecklist(client.checklist, 'todas');
@@ -1076,6 +1146,37 @@ function filterChecklist(f) {
   if(currentUser) renderChecklist(currentUser.checklist, f);
 }
 
+function calcularScoreAutomatico(client) {
+  // Score base vindo do assessment
+  var scoreBase = client.scoreHistory && client.scoreHistory.length > 0 ? client.scoreHistory[0] : 40;
+  // Cada tarefa concluída vale pontos proporcionais ao gap entre score base e 100
+  var totalTarefas = client.checklist.length;
+  var tarefasConcluidas = client.checklist.filter(function(t){return t.done;}).length;
+  var pctConcluido = tarefasConcluidas / totalTarefas;
+  // Score cresce proporcionalmente: cada tarefa move 60% do gap restante
+  var gap = 100 - scoreBase;
+  var novoScore = Math.round(scoreBase + (gap * pctConcluido * 0.85));
+  novoScore = Math.min(99, Math.max(scoreBase, novoScore));
+  return novoScore;
+}
+
+function atualizarScoreCliente(client, clients) {
+  var novoScore = calcularScoreAutomatico(client);
+  if(novoScore !== client.score) {
+    client.score = novoScore;
+    // Adiciona ao histórico se for novo valor
+    if(!client.scoreHistory) client.scoreHistory = [novoScore];
+    var ultimo = client.scoreHistory[client.scoreHistory.length-1];
+    if(ultimo !== novoScore) {
+      client.scoreHistory.push(novoScore);
+      // Mantém no máximo 12 entradas no histórico
+      if(client.scoreHistory.length > 12) client.scoreHistory.shift();
+    }
+    saveClients(clients);
+  }
+  return novoScore;
+}
+
 function toggleCheck(taskId) {
   if(!currentUser) return;
   var clients = getClients();
@@ -1085,26 +1186,51 @@ function toggleCheck(taskId) {
 
   var wasUndone = !task.done;
   task.done = !task.done;
-  saveClients(clients);
+
+  // Recalcula score automaticamente
+  var novoScore = atualizarScoreCliente(client, clients);
   currentUser = client;
   renderChecklist(client.checklist, currentChecklistFilter);
 
-  // Update stats
+  // Atualiza stats na tela
   var tasksDone = client.checklist.filter(function(c){return c.done;}).length;
   var tasksPct = Math.round((tasksDone/client.checklist.length)*100);
   document.getElementById('stat-tasks-done').textContent = tasksDone;
   document.getElementById('stat-tasks-pct').textContent = tasksPct+'% do plano';
 
-  // WhatsApp notification — só dispara ao CONCLUIR (não ao desmarcar)
+  // Atualiza score na tela se mudou
   if(wasUndone) {
-    showTaskToast(task, client, tasksDone, tasksPct);
+    // Anima ring e contador de score
+    var fill = document.getElementById('client-ring');
+    if(fill) fill.style.strokeDashoffset = 289-(289*(novoScore/100));
+    var el = document.getElementById('client-score-num');
+    if(el) {
+      var start = parseInt(el.textContent)||0;
+      var diff = novoScore - start;
+      if(diff > 0) {
+        var steps = 20;
+        var step = 0;
+        var iv = setInterval(function(){
+          step++;
+          el.textContent = Math.round(start + (diff*(step/steps)));
+          if(step >= steps) clearInterval(iv);
+        }, 30);
+      }
+    }
+    // Atualiza nível
+    var nivel = NIVEL_LUME.find(function(n){return novoScore<=n.max;})||NIVEL_LUME[3];
+    var lvl = document.getElementById('client-level-badge');
+    if(lvl) lvl.textContent = nivel.label;
+
+    showTaskToast(task, client, tasksDone, tasksPct, novoScore);
   }
 }
 
-function showTaskToast(task, client, tasksDone, tasksPct) {
-  // Remove toast anterior se existir
+function showTaskToast(task, client, tasksDone, tasksPct, novoScore) {
   var old = document.getElementById('lume-toast');
   if(old) old.remove();
+
+  var scoreMsg = novoScore ? '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(81,207,102,.12);border:1px solid rgba(81,207,102,.2);border-radius:8px;padding:4px 10px;margin-bottom:10px"><span style="font-size:11px;color:#51cf66;font-weight:700">📈 Score atualizado: '+novoScore+'/100</span></div><br>' : '';
 
   var toast = document.createElement('div');
   toast.id = 'lume-toast';
@@ -1113,23 +1239,20 @@ function showTaskToast(task, client, tasksDone, tasksPct) {
     '<div style="display:flex;align-items:flex-start;gap:12px">'+
       '<div style="font-size:22px;margin-top:2px">✅</div>'+
       '<div style="flex:1">'+
-        '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#f0f0f8;margin-bottom:3px">Tarefa concluída!</div>'+
-        '<div style="font-size:12px;color:#a8a8c8;margin-bottom:12px;line-height:1.5">'+task.text+'<br>'+tasksPct+'% do plano completo</div>'+
+        '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#f0f0f8;margin-bottom:4px">Tarefa concluída!</div>'+
+        scoreMsg+
+        '<div style="font-size:12px;color:#a8a8c8;margin-bottom:10px;line-height:1.5">'+task.text+'<br>'+tasksPct+'% do plano completo</div>'+
         '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
           '<button onclick="notifyAdmin(\''+encodeURIComponent(task.text)+'\',\''+encodeURIComponent(client.nome)+'\',\''+encodeURIComponent(client.empresa)+'\','+tasksDone+','+tasksPct+')" style="padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;">📲 Avisar Admin</button>'+
-          '<button onclick="notifyClient(\''+encodeURIComponent(task.text)+'\',\''+encodeURIComponent(client.nome)+'\',\''+encodeURIComponent(client.whatsapp)+'\','+tasksPct+')" style="padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;background:rgba(28,143,236,.15);color:#e8c98a;border:1px solid rgba(28,143,236,.25);">🎉 Meu WhatsApp</button>'+
-          '<button onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" style="padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-family:DM Sans,sans-serif;font-size:12px;background:transparent;color:#5a5a7a;">Fechar</button>'+
+          '<button onclick="notifyClient(\''+encodeURIComponent(task.text)+'\',\''+encodeURIComponent(client.nome)+'\',\''+encodeURIComponent(client.whatsapp)+'\','+tasksPct+')" style="padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;background:rgba(28,143,236,.15);color:#29a3e6;border:1px solid rgba(28,143,236,.25);">🎉 Meu WhatsApp</button>'+
+          '<button onclick="this.closest(\'#lume-toast\').remove()" style="padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-family:DM Sans,sans-serif;font-size:12px;background:transparent;color:#5a5a7a;">Fechar</button>'+
         '</div>'+
       '</div>'+
     '</div>';
   document.body.appendChild(toast);
-
-  // Auto-remove após 12 segundos
-  setTimeout(function(){
-    var t = document.getElementById('lume-toast');
-    if(t) t.remove();
-  }, 12000);
+  setTimeout(function(){ var t=document.getElementById('lume-toast'); if(t)t.remove(); }, 14000);
 }
+
 
 function notifyAdmin(taskText, clientNome, clientEmpresa, tasksDone, tasksPct) {
   var task = decodeURIComponent(taskText);
