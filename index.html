@@ -282,21 +282,9 @@ body::after{
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
 .btn-cta{font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;padding:16px 44px;border-radius:100px;border:none;cursor:pointer;background:var(--grad);color:#fff;letter-spacing:.02em;transition:all .25s;box-shadow:0 8px 28px rgba(124,92,252,.4);}
 .btn-cta:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(124,92,252,.6);}
-.btn-pdf{font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border-radius:100px;border:2px solid rgba(124,92,252,.5);background:transparent;color:#a78bff;cursor:pointer;letter-spacing:.02em;transition:all .25s;}
-.btn-pdf:hover{background:rgba(124,92,252,.1);border-color:var(--c1);transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,92,252,.25);}
 .btn-restart{display:block;margin:0 auto;background:transparent;border:none;color:var(--muted);font-size:14px;cursor:pointer;text-decoration:underline;font-family:'Outfit',sans-serif;}
 
-/* PRINT */
-@media print{
-  body{background:#0a0824!important;}
-  body::before,body::after,.particles,.cta-final{display:none!important;}
-  .screen{display:block!important;}
-  #screen-intro,#screen-quiz,#screen-loading{display:none!important;}
-  #screen-result{display:block!important;}
-  .report-page,.report-cover{box-shadow:none!important;page-break-inside:avoid;margin-bottom:12px;}
-  .wrap{padding:10px!important;max-width:100%!important;}
-  .report-cover,.evolucao-box,.page-num,.btn-primary,.btn-cta{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-}
+/* END STYLES */
 
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
@@ -860,10 +848,28 @@ function buildReport(){
     '<div class="report-page" style="animation:fadeUp .5s .45s ease both;opacity:0;animation-fill-mode:both">'+
     '<div class="page-header"><div class="page-num">08</div><div><div class="page-title">Conclusão Estratégica</div></div></div>'+
     '<div class="conclusao-box"><p><strong>'+state.empresa+'</strong> apresenta perfil <strong>'+disc.nome+'</strong> com score de <strong>'+score100+'/100</strong>. Os principais vetores de crescimento são <strong>'+top3.map(function(o){return o.e;}).join(', ')+'</strong> — onde as soluções G.E.N.I.X. podem gerar até <strong>+'+evolucao+'%</strong> de maturidade operacional nos próximos 90 dias.</p></div>'+
-    '<div class="cta-final"><h3>Pronto para transformar esse diagnóstico em resultado?</h3>'+
-    '<p>Agende sua consultoria estratégica gratuita e descubra como implementar as melhorias.</p>'+
-    '<div class="cta-btns"><button class="btn-cta" onclick="agendarConsultoria()">📅 Agendar Consultoria G.E.N.I.X.</button><button class="btn-pdf" onclick="baixarPDF()">⬇ Baixar Laudo PDF</button></div>'+
-    '<button class="btn-restart" onclick="restart()">↺ Refazer diagnóstico</button></div></div>';
+    '<div class="cta-final">'+
+      '<div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c1);margin-bottom:14px">Próximo Passo</div>'+
+      '<h3 style="font-family:Playfair Display,serif;font-size:24px;margin-bottom:12px;line-height:1.3">Seu diagnóstico revelou o caminho.<br>A <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Metodologia LUME</span> te leva até lá.</h3>'+
+      '<p style="font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:20px;max-width:480px;margin-left:auto;margin-right:auto">'+
+        'O checklist de tarefas, o plano de ação personalizado e o acompanhamento estratégico do seu crescimento fazem parte da <strong style="color:var(--text)">Metodologia LUME</strong> — aplicada pelo time <strong style="color:var(--text)">Web Genix</strong> diretamente no seu negócio de beleza.'+
+      '</p>'+
+      '<div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">'+
+        '<div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.18);border-radius:12px;font-size:13px;color:var(--text2)"><span>✅</span> Plano de ação em 90 dias</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.18);border-radius:12px;font-size:13px;color:var(--text2)"><span>✅</span> Checklist de implementação</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.18);border-radius:12px;font-size:13px;color:var(--text2)"><span>✅</span> Painel de acompanhamento LUME</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.18);border-radius:12px;font-size:13px;color:var(--text2)"><span>✅</span> Ferramentas integradas ao seu negócio</div>'+
+      '</div>'+
+      '<div style="background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(248,87,166,.07));border:1px solid rgba(124,92,252,.2);border-radius:16px;padding:20px 24px;margin-bottom:24px;text-align:left">'+
+        '<div style="font-size:13px;color:var(--muted);line-height:1.7">'+
+          '"<em style=\'color:var(--text2)\'>O diagnóstico mostrou onde você está. A Metodologia LUME define exatamente o que fazer, na ordem certa, para você crescer com organização e método — sem depender só de indicação ou de trabalhar mais horas.</em>"'+
+        '</div>'+
+      '</div>'+
+      '<button class="btn-cta" onclick="agendarConsultoria()">📲 Quero aplicar a Metodologia LUME →</button>'+
+      '<p style="font-size:12px;color:var(--muted);margin-top:12px">Fale agora com o time <strong>Web Genix</strong> pelo WhatsApp e descubra como dar início ao seu plano.</p>'+
+      '<button class="btn-restart" onclick="restart()" style="margin-top:16px">↺ Refazer diagnóstico</button>'+
+    '</div>'+
+  '</div>';
 
   showScreen('result');
   setTimeout(function(){
@@ -930,98 +936,24 @@ async function salvarLead(d){
     console.log('Lead salvo para integração LUME Panel:', d.nome);
   }catch(e){console.warn('LocalStorage error:',e);}
 }
-function baixarPDF(){
-  var btn=document.querySelector('.btn-pdf');if(!btn)return;
-  var orig=btn.innerHTML;
-  btn.innerHTML='⏳ Gerando PDF...';btn.disabled=true;
-  // Envia e-mail com link para o PDF antes de imprimir
-  enviarEmailLaudo();
-  setTimeout(function(){
-    var t=document.title;
-    document.title='Laudo GENIX Beauty - '+state.empresa+' - Score '+state._score100;
-    window.print();
-    document.title=t;
-    btn.innerHTML=orig;btn.disabled=false;
-  },800);
-}
-
-function enviarEmailLaudo(){
-  if(!state.email) return;
-  // ──────────────────────────────────────────────────────────
-  // INTEGRAÇÃO EMAILJS (gratuito — emailjs.com)
-  // 1. Crie conta em emailjs.com
-  // 2. Crie um Service (Gmail) e um Template
-  // 3. Cole seu PUBLIC KEY, SERVICE ID e TEMPLATE ID abaixo
-  // ──────────────────────────────────────────────────────────
-  var EMAILJS_PUBLIC_KEY  = 'SUA_PUBLIC_KEY_AQUI';
-  var EMAILJS_SERVICE_ID  = 'SEU_SERVICE_ID_AQUI';
-  var EMAILJS_TEMPLATE_ID = 'SEU_TEMPLATE_ID_AQUI';
-
-  if(EMAILJS_PUBLIC_KEY === 'SUA_PUBLIC_KEY_AQUI'){
-    console.log('📧 E-mail não enviado — configure EmailJS.');
-    mostrarEmailToast('simulado');
-    return;
-  }
-
-  // Inicializa EmailJS
-  if(typeof emailjs === 'undefined'){
-    var s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    s.onload = function(){
-      emailjs.init(EMAILJS_PUBLIC_KEY);
-      dispararEmail(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID);
-    };
-    document.head.appendChild(s);
-  } else {
-    dispararEmail(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID);
-  }
-}
-
-function dispararEmail(serviceId, templateId){
-  var nivel = NIVEL_LUME ? '' : '';
-  var params = {
-    to_email:    state.email,
-    to_name:     state.nome,
-    empresa:     state.empresa,
-    score:       state._score100,
-    perfil:      state._perfil || 'Diagnóstico LUME',
-    segmento:    state.segmento || 'Beleza & Estética',
-    whatsapp:    state.whatsapp,
-    link_painel: 'https://webgenixdigital-cpu.github.io/assessmentgenix/lume-panel.html',
-    reply_to:    'contato@genix.com.br'
-  };
-  emailjs.send(serviceId, templateId, params)
-    .then(function(){ mostrarEmailToast('enviado'); })
-    .catch(function(e){ console.warn('EmailJS error:', e); mostrarEmailToast('erro'); });
-}
-
-function mostrarEmailToast(status){
-  var msgs = {
-    enviado: {icon:'📧', title:'Laudo enviado para seu e-mail!', sub:'Verifique sua caixa de entrada e spam.', cor:'rgba(81,207,102,.3)'},
-    simulado:{icon:'📧', title:'Laudo pronto!', sub:'Configure o EmailJS para envio automático.', cor:'rgba(28,143,236,.3)'},
-    erro:    {icon:'⚠️', title:'Não foi possível enviar o e-mail', sub:'Baixe o PDF manualmente pelo botão acima.', cor:'rgba(255,107,107,.3)'},
-  };
-  var m = msgs[status] || msgs.simulado;
-  var old = document.getElementById('email-toast');
-  if(old) old.remove();
-  var el = document.createElement('div');
-  el.id = 'email-toast';
-  el.style.cssText = 'position:fixed;top:24px;right:24px;z-index:999;background:#0f0c17;border:1px solid '+m.cor+';border-radius:14px;padding:16px 20px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.6);animation:fadeUp .3s ease both;display:flex;align-items:flex-start;gap:12px;';
-  el.innerHTML = '<div style="font-size:22px">'+m.icon+'</div><div><div style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#f0f0ff;margin-bottom:3px">'+m.title+'</div><div style="font-size:12px;color:#a8a8c8">'+m.sub+'</div><div style="font-size:11px;color:#5a5a7a;margin-top:4px">Para: '+state.email+'</div></div>';
-  document.body.appendChild(el);
-  setTimeout(function(){ var t=document.getElementById('email-toast'); if(t)t.remove(); }, 6000);
-}
 function agendarConsultoria(){
-  var msg=encodeURIComponent('Olá! Fiz o diagnóstico G.E.N.I.X. Minha empresa é '+state.empresa+' e meu score foi '+state._score100+'/100.');
-  window.open('https://wa.me/5535987096476?text='+msg,'_blank');
+  // ▼▼▼ SEU NÚMERO WHATSAPP (com DDI+DDD) ▼▼▼
+  var SEU_WPP = '5535987096476';
+  var msg=encodeURIComponent(
+    'Olá! Acabei de fazer o diagnóstico G.E.N.I.X. Beauty.\n\n'+
+    '🏢 Negócio: '+state.empresa+'\n'+
+    '📊 Score: '+state._score100+'/100\n\n'+
+    'Quero saber mais sobre a Metodologia LUME para colocar o plano de ação em prática!'
+  );
+  window.open('https://wa.me/'+SEU_WPP+'?text='+msg,'_blank');
 }
 function restart(){
   state={nome:'',empresa:'',whatsapp:'',email:'',nicho:null,segmento:null,qIdx:0,respostas:{},_score100:0};
   document.querySelectorAll('.nicho-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('#beauty-segments .nicho-btn').forEach(function(b){b.classList.remove('active');});
   ['f-nome','f-empresa','f-whatsapp','f-email'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   showScreen('intro');
 }
-
 </script>
 </body>
 </html>
