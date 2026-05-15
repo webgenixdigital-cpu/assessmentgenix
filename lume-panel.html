@@ -1080,24 +1080,26 @@ function recalcularTodosScores() {
   });
   renderAdminDashboard();
 }
+
+function buildMetas(client) {
   var diasNoPrograma = Math.floor((Date.now()-new Date(client.startDate).getTime())/(24*60*60*1000));
   var phases = [
     {num:1,title:'Estrutura Base (0–30 dias)',items:[
-      'Organização da agenda e migração para agendamento digital',
-      'Cadastro e organização da base de clientes no CRM',
-      'Criação do catálogo digital de serviços e SmallBio',
+      'Organizar agenda com sistema digital 24h',
+      'Cadastrar base de clientes no CRM',
+      'Criar catálogo de serviços e SmallBio',
       'Mapeamento de precificação e margem por procedimento'
     ]},
     {num:2,title:'Processos & Automação (30–60 dias)',items:[
-      'Fluxos automáticos: boas-vindas, pós-atendimento e NPS',
-      'Reativação automática de clientes inativos (+60 dias)',
-      'Controle financeiro: DRE e custo por procedimento',
+      'Ativar fluxos automáticos de boas-vindas e NPS',
+      'Implantar reativação de clientes inativos (+60 dias)',
+      'Estruturar controle financeiro por procedimento',
       'Estruturação de comissão, metas e treinamento da equipe'
     ]},
     {num:3,title:'Crescimento & Escala (60–90 dias)',items:[
       'Plano de captação: indicação estruturada e tráfego local',
-      'Otimização do Google Meu Negócio e reputação digital',
-      'Revisão de KPIs: ticket médio, NPS e taxa de retorno',
+      'Otimizar Google Meu Negócio e reputação digital',
+      'Revisar KPIs: ticket médio, NPS e taxa de retorno',
       'Avaliação final de maturidade LUME e plano de continuidade'
     ]},
   ];
@@ -1116,7 +1118,7 @@ function recalcularTodosScores() {
     '</div>';
   });
   document.getElementById('client-timeline').innerHTML = html;
-
+}
 
 function buildChecklist(client) {
   renderChecklist(client.checklist, 'todas');
