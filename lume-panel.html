@@ -686,20 +686,20 @@ body::after {
             <div class="form-field">
               <label>Segmento</label>
               <select id="f-client-nicho">
-                <option value="estetica">Estética & Beleza</option>
-                <option value="saude">Saúde & Clínicas</option>
-                <option value="escritorio">Escritório & Serviços</option>
-                <option value="liberal">Profissional Liberal</option>
-                <option value="imobiliaria">Imobiliária & Corretores</option>
-                <option value="comercial">Comércio & Varejo</option>
+                <option value="salao">Salão de Beleza</option>
+                <option value="clinica">Clínica Estética</option>
+                <option value="beauty">Beauty Design (Sobrancelha, Lash, Nail)</option>
+                <option value="barbearia">Barbearia</option>
+                <option value="spa">Spa & Bem-estar</option>
+                <option value="studio">Studio Especializado</option>
               </select>
             </div>
             <div class="form-field">
               <label>Metodologia</label>
               <select id="f-client-metodologia">
-                <option value="lume">LUME — Crescimento Assistido</option>
-                <option value="lume-expansao">LUME Expansão</option>
-                <option value="lume-gestao">LUME Gestão</option>
+                <option value="lume-start">LUME Start — Estrutura Base</option>
+                <option value="lume-growth">LUME Growth — Crescimento Assistido</option>
+                <option value="lume-scale">LUME Scale — Expansão e Escala</option>
               </select>
             </div>
             <div class="form-field">
@@ -717,14 +717,17 @@ body::after {
             <div class="form-field full"><label>Observações</label><textarea id="f-client-obs" placeholder="Pontos de atenção, contexto, perfil..."></textarea></div>
           </div>
           <div class="divider"></div>
-          <div class="card-title mb-16">Pilares (Score 0–20 cada)</div>
+          <div class="card-title mb-16">Pilares Beauty (Score 0–20 cada)</div>
           <div class="form-grid">
-            <div class="form-field"><label>Gestão</label><input type="number" id="fp-gestao" min="0" max="20" placeholder="0-20" value="10"></div>
-            <div class="form-field"><label>Eficiência Comercial</label><input type="number" id="fp-comercial" min="0" max="20" placeholder="0-20" value="10"></div>
-            <div class="form-field"><label>Digital</label><input type="number" id="fp-digital" min="0" max="20" placeholder="0-20" value="10"></div>
-            <div class="form-field"><label>Automação</label><input type="number" id="fp-automacao" min="0" max="20" placeholder="0-20" value="10"></div>
-            <div class="form-field"><label>Gestão de Pessoas</label><input type="number" id="fp-pessoas" min="0" max="20" placeholder="0-20" value="10"></div>
-            <div class="form-field"><label>Expansão</label><input type="number" id="fp-expansao" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Agendamento & Organização</label><input type="number" id="fp-agendamento" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Gestão Financeira</label><input type="number" id="fp-financeira" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Fidelização & Retenção</label><input type="number" id="fp-fidelizacao" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Captação & Marketing</label><input type="number" id="fp-captacao" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Presença Digital</label><input type="number" id="fp-digital" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Processos & Automação</label><input type="number" id="fp-automacao" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Equipe & Profissionalização</label><input type="number" id="fp-equipe" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Experiência do Cliente</label><input type="number" id="fp-experiencia" min="0" max="20" placeholder="0-20" value="10"></div>
+            <div class="form-field"><label>Crescimento & Visão</label><input type="number" id="fp-crescimento" min="0" max="20" placeholder="0-20" value="10"></div>
           </div>
           <div class="divider"></div>
           <div style="display:flex;gap:12px;justify-content:flex-end">
@@ -767,6 +770,23 @@ body::after {
 // DATA
 // ══════════════════════════════════════
 var ADMIN_CREDENTIALS = { user: 'admin', pass: 'lume2024' };
+
+// ══ BEAUTY SEGMENTS — fonte única de verdade ══
+var BEAUTY_SEGMENTS = {
+  salao:    {nome:'Salão de Beleza',      icon:'💇', cor:'#f857a6'},
+  clinica:  {nome:'Clínica Estética',     icon:'✨', cor:'#1c8fec'},
+  beauty:   {nome:'Beauty Design',        icon:'💅', cor:'#b512b9'},
+  barbearia:{nome:'Barbearia',            icon:'✂️', cor:'#ff8c00'},
+  spa:      {nome:'Spa & Bem-estar',      icon:'🧖', cor:'#51cf66'},
+  studio:   {nome:'Studio Especializado', icon:'🌸', cor:'#ffd166'},
+};
+
+// ══ METODOLOGIAS LUME ══
+var METODOLOGIAS = {
+  'lume-start':  'LUME Start — Estrutura Base',
+  'lume-growth': 'LUME Growth — Crescimento Assistido',
+  'lume-scale':  'LUME Scale — Expansão e Escala',
+};
 
 // ▼▼▼ SEU WHATSAPP (só números, com DDI+DDD) ▼▼▼
 var ADMIN_WHATSAPP = '5534999999999';
@@ -832,7 +852,7 @@ var DEFAULT_CLIENTS = [
   {
     id:'cl1', nome:'Ana Paula', empresa:'Studio Ana Beauty',
     email:'ana@studioana.com', senha:'ana123',
-    whatsapp:'(34) 99801-1234', nicho:'estetica',
+    whatsapp:'(34) 99801-1234', nicho:'salao',
     metodologia:'lume', score:58, status:'active',
     obs:'Foco em fidelização e automação de reativação. Agenda desorganizada.',
     startDate: new Date(Date.now()-35*24*60*60*1000).toISOString(),
@@ -844,8 +864,8 @@ var DEFAULT_CLIENTS = [
   {
     id:'cl2', nome:'Carlos Ribeiro', empresa:'CR Consultoria',
     email:'carlos@crconsultoria.com', senha:'carlos123',
-    whatsapp:'(34) 99700-5678', nicho:'escritorio',
-    metodologia:'lume-expansao', score:42, status:'starting',
+    whatsapp:'(34) 99700-5678', nicho:'clinica',
+    metodologia:'lume', score:42, status:'starting',
     obs:'Foco em captação ativa e pipeline comercial.',
     startDate: new Date(Date.now()-12*24*60*60*1000).toISOString(),
     pilares:{'Agendamento & Organização':8,'Gestão Financeira':8,'Fidelização & Retenção':6,'Captação & Marketing':8,'Presença Digital':8,'Processos & Automação':6,'Equipe & Profissionalização':10,'Experiência do Cliente':8,'Crescimento & Visão':8},
@@ -939,7 +959,7 @@ function loadClientPanel(client) {
   // Sidebar
   document.getElementById('client-avatar-sidebar').textContent = client.nome.charAt(0);
   document.getElementById('client-name-sidebar').textContent = client.nome;
-  document.getElementById('client-nicho-sidebar').textContent = client.empresa;
+  document.getElementById('client-nicho-sidebar').textContent = (BEAUTY_SEGMENTS[client.nicho]||{nome:'Beleza'}).nome;
 
   // Dashboard
   document.getElementById('client-greeting').textContent = client.nome.split(' ')[0];
@@ -951,7 +971,7 @@ function loadClientPanel(client) {
   document.getElementById('stat-tasks-done').textContent = tasksDone;
   document.getElementById('stat-tasks-pct').textContent = tasksPct+'% do plano';
   document.getElementById('stat-dias').textContent = diasNoPrograma;
-  document.getElementById('stat-pilares').textContent = Object.values(client.pilares).filter(function(v){return v>=10;}).length+'/6';
+  document.getElementById('stat-pilares').textContent = Object.values(client.pilares).filter(function(v){return v>=10;}).length+'/9';
   document.getElementById('stat-tools').textContent = toolsInt;
 
   // Ring animation
@@ -1295,12 +1315,15 @@ function buildPilares(client) {
     var v = client.pilares[p]||0;
     var pct = (v/20)*100;
     var desc = {
-      'Gestão':'Controle financeiro, processos e indicadores operacionais.',
-      'Eficiência Comercial':'CRM, agendamento, funil de vendas e conversão.',
-      'Digital':'Presença online, catálogo, SmallBio e captação digital.',
-      'Automação':'Fluxos automáticos de comunicação, pós-venda e reativação.',
-      'Gestão de Pessoas':'Equipe, benefícios, telemedicina e retenção de talentos.',
-      'Expansão':'Crescimento estruturado, novos canais e Metodologia LUME.'
+      'Agendamento & Organização':'Agenda digital, confirmações automáticas e redução de faltas.',
+      'Gestão Financeira':'DRE, fluxo de caixa, ticket médio e rentabilidade por serviço.',
+      'Fidelização & Retenção':'CRM, retorno programado, reativação de inativos e aniversários.',
+      'Captação & Marketing':'Indicação estruturada, tráfego local e Google Meu Negócio.',
+      'Presença Digital':'SmallBio, catálogo online, avaliações e agendamento digital.',
+      'Processos & Automação':'Pós-atendimento, NPS automático, estoque e fluxos de reativação.',
+      'Equipe & Profissionalização':'Metas, comissão, treinamento e avaliação de desempenho.',
+      'Experiência do Cliente':'NPS, satisfação, reputação e gestão de avaliações online.',
+      'Crescimento & Visão':'Expansão estruturada, método LUME e plano de escala.'
     }[p];
     html+='<div class="card">'+
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'+
@@ -1400,13 +1423,13 @@ function renderAdminDashboard() {
   if(rankEl) rankEl.innerHTML = rankingHtml || '<div class="text-muted">Nenhum cliente ainda.</div>';
 
   // Client list compact
-  var gradients = ['linear-gradient(135deg,#1c8fec,#29a3e6)','linear-gradient(135deg,#b512b9,#6c23a9)','linear-gradient(135deg,#6483d3,#1c8fec)','linear-gradient(135deg,#d155b5,#b512b9)'];
+  // avatars now use BEAUTY_SEGMENTS
   var statusClasses = {active:'badge-active',starting:'badge-starting',review:'badge-review'};
   var statusLabels2 = {active:'Ativo',starting:'Iniciando',review:'Em revisão'};
   var listHtml = clients.map(function(c,i){
     var tasksPct = Math.round((c.checklist.filter(function(t){return t.done;}).length/c.checklist.length)*100);
     return '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .2s" onclick="openClientModal(\''+c.id+'\')">'+
-      '<div style="width:38px;height:38px;border-radius:10px;background:'+gradients[i%gradients.length]+';display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0">'+c.nome.charAt(0)+'</div>'+
+      '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,'+(BEAUTY_SEGMENTS[c.nicho]||{cor:'#1c8fec'}).cor+','+(BEAUTY_SEGMENTS[c.nicho]||{cor:'#1c8fec'}).cor+'aa);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+(BEAUTY_SEGMENTS[c.nicho]||{icon:'💆'}).icon+'</div>'+
       '<div style="flex:1;min-width:0">'+
         '<div style="font-size:14px;font-weight:600;color:var(--text)">'+c.nome+' · '+c.empresa+'</div>'+
         '<div style="display:flex;align-items:center;gap:8px;margin-top:5px">'+
@@ -1428,47 +1451,47 @@ function renderAdminDashboard() {
 function renderClientList() {
   var clients = getClients();
   document.getElementById('admin-total').textContent = clients.length;
-  var avgScore = Math.round(clients.reduce(function(a,c){return a+c.score;},0)/clients.length)||0;
+  var avgScore = Math.round(clients.reduce(function(a,cl){return a+cl.score;},0)/Math.max(clients.length,1))||0;
   document.getElementById('admin-avg-score').textContent = avgScore;
-  var avgTasks = Math.round(clients.reduce(function(a,c){
-    return a+Math.round((c.checklist.filter(function(t){return t.done;}).length/c.checklist.length)*100);
-  },0)/clients.length)||0;
+  var avgTasks = Math.round(clients.reduce(function(a,cl){
+    return a+Math.round((cl.checklist.filter(function(t){return t.done;}).length/cl.checklist.length)*100);
+  },0)/Math.max(clients.length,1))||0;
   document.getElementById('admin-avg-tasks').textContent = avgTasks+'%';
-  document.getElementById('admin-lume-count').textContent = clients.filter(function(c){return c.metodologia.includes('lume');}).length;
+  document.getElementById('admin-lume-count').textContent = clients.filter(function(cl){return cl.metodologia&&cl.metodologia.includes('lume');}).length;
 
-  var gradients = [
-    'linear-gradient(135deg,#1c8fec,#f0ddb0)',
-    'linear-gradient(135deg,#6e8fff,#4ecdc4)',
-    'linear-gradient(135deg,#f857a6,#ff8c00)',
-    'linear-gradient(135deg,#51cf66,#4ecdc4)',
-  ];
   var statusLabels = {active:'Ativo',starting:'Iniciando',review:'Em Revisão'};
   var statusClasses = {active:'badge-active',starting:'badge-starting',review:'badge-review'};
 
   var html = '';
-  clients.forEach(function(c,i){
-    html+='<div class="client-row" onclick="openClientModal(\''+c.id+'\')">'+
-      '<div class="client-avatar" style="background:'+gradients[i%gradients.length]+';color:#07080f">'+c.nome.charAt(0)+'</div>'+
+  clients.forEach(function(cl){
+    var seg = BEAUTY_SEGMENTS[cl.nicho] || {nome:cl.nicho||'Beleza',icon:'💆',cor:'#1c8fec'};
+    var met = METODOLOGIAS[cl.metodologia] || cl.metodologia || 'LUME';
+    var tasksPct = Math.round((cl.checklist.filter(function(t){return t.done;}).length/Math.max(cl.checklist.length,1))*100);
+    html+='<div class="client-row" onclick="openClientModal(''+cl.id+'')">'+
+      '<div class="client-avatar" style="background:linear-gradient(135deg,'+seg.cor+','+seg.cor+'99);color:#fff;font-size:20px">'+seg.icon+'</div>'+
       '<div class="client-info">'+
-        '<div class="client-name">'+c.nome+' · '+c.empresa+'</div>'+
-        '<div class="client-nicho">'+c.nicho+' · '+c.metodologia.toUpperCase()+'</div>'+
+        '<div class="client-name">'+cl.nome+' · '+cl.empresa+'</div>'+
+        '<div class="client-nicho">'+seg.nome+' · '+met+'</div>'+
       '</div>'+
       '<div class="client-score">'+
-        '<div class="client-score-num">'+c.score+'</div>'+
+        '<div class="client-score-num">'+cl.score+'</div>'+
         '<div class="client-score-lbl">score LUME</div>'+
       '</div>'+
-      '<span class="client-badge '+statusClasses[c.status]+'">'+statusLabels[c.status]+'</span>'+
+      '<span class="client-badge '+(statusClasses[cl.status]||'badge-active')+'">'+(statusLabels[cl.status]||'Ativo')+'</span>'+
     '</div>';
   });
-  document.getElementById('admin-client-list').innerHTML = html;
+  document.getElementById('admin-client-list').innerHTML = html || '<div style="padding:32px;text-align:center;color:var(--muted)">Nenhum cliente cadastrado ainda.</div>';
 }
 
 function openClientModal(id) {
   var c = getClientById(id);
   if(!c) return;
-  document.getElementById('modal-client-title').textContent = c.nome+' · '+c.empresa;
+  var segM = BEAUTY_SEGMENTS[c.nicho]||{icon:'💆'};
+  document.getElementById('modal-client-title').textContent = segM.icon+' '+c.nome+' · '+c.empresa;
   var tasksDone = c.checklist.filter(function(t){return t.done;}).length;
   var tasksPct = Math.round((tasksDone/c.checklist.length)*100);
+  var seg = BEAUTY_SEGMENTS[c.nicho] || {nome:c.nicho,icon:'💆',cor:'#1c8fec'};
+  var met = METODOLOGIAS[c.metodologia] || c.metodologia || 'LUME';
   var pilarHtml = PILARES.map(function(p,i){
     var v=c.pilares[p]||0;
     return '<div style="margin-bottom:10px">'+
@@ -1514,12 +1537,15 @@ function editClient(id) {
   document.getElementById('f-client-score').value = c.score;
   document.getElementById('f-client-status').value = c.status;
   document.getElementById('f-client-obs').value = c.obs;
-  document.getElementById('fp-gestao').value = c.pilares['Gestão']||10;
-  document.getElementById('fp-comercial').value = c.pilares['Eficiência Comercial']||10;
-  document.getElementById('fp-digital').value = c.pilares['Digital']||10;
-  document.getElementById('fp-automacao').value = c.pilares['Automação']||10;
-  document.getElementById('fp-pessoas').value = c.pilares['Gestão de Pessoas']||10;
-  document.getElementById('fp-expansao').value = c.pilares['Expansão']||10;
+  document.getElementById('fp-agendamento').value = c.pilares['Agendamento & Organização']||10;
+  document.getElementById('fp-financeira').value = c.pilares['Gestão Financeira']||10;
+  document.getElementById('fp-fidelizacao').value = c.pilares['Fidelização & Retenção']||10;
+  document.getElementById('fp-captacao').value = c.pilares['Captação & Marketing']||10;
+  document.getElementById('fp-digital').value = c.pilares['Presença Digital']||10;
+  document.getElementById('fp-automacao').value = c.pilares['Processos & Automação']||10;
+  document.getElementById('fp-equipe').value = c.pilares['Equipe & Profissionalização']||10;
+  document.getElementById('fp-experiencia').value = c.pilares['Experiência do Cliente']||10;
+  document.getElementById('fp-crescimento').value = c.pilares['Crescimento & Visão']||10;
 }
 
 function deleteClient(id) {
@@ -1549,12 +1575,15 @@ function salvarCliente() {
     obs: document.getElementById('f-client-obs').value,
     startDate: editingClientId ? (getClientById(editingClientId)||{}).startDate||new Date().toISOString() : new Date().toISOString(),
     pilares: {
-      'Gestão': parseInt(document.getElementById('fp-gestao').value)||10,
-      'Eficiência Comercial': parseInt(document.getElementById('fp-comercial').value)||10,
-      'Digital': parseInt(document.getElementById('fp-digital').value)||10,
-      'Automação': parseInt(document.getElementById('fp-automacao').value)||10,
-      'Gestão de Pessoas': parseInt(document.getElementById('fp-pessoas').value)||10,
-      'Expansão': parseInt(document.getElementById('fp-expansao').value)||10,
+      'Agendamento & Organização': parseInt(document.getElementById('fp-agendamento').value)||10,
+      'Gestão Financeira': parseInt(document.getElementById('fp-financeira').value)||10,
+      'Fidelização & Retenção': parseInt(document.getElementById('fp-fidelizacao').value)||10,
+      'Captação & Marketing': parseInt(document.getElementById('fp-captacao').value)||10,
+      'Presença Digital': parseInt(document.getElementById('fp-digital').value)||10,
+      'Processos & Automação': parseInt(document.getElementById('fp-automacao').value)||10,
+      'Equipe & Profissionalização': parseInt(document.getElementById('fp-equipe').value)||10,
+      'Experiência do Cliente': parseInt(document.getElementById('fp-experiencia').value)||10,
+      'Crescimento & Visão': parseInt(document.getElementById('fp-crescimento').value)||10,
     },
     scoreHistory: editingClientId ? (getClientById(editingClientId)||{}).scoreHistory||[parseInt(document.getElementById('f-client-score').value)||40] : [parseInt(document.getElementById('f-client-score').value)||40],
     checklist: editingClientId ? (getClientById(editingClientId)||{}).checklist||JSON.parse(JSON.stringify(CHECKLIST_TEMPLATE)) : JSON.parse(JSON.stringify(CHECKLIST_TEMPLATE)),
@@ -1577,7 +1606,7 @@ function clearClientForm() {
     var el=document.getElementById(id); if(el) el.value='';
   });
   document.getElementById('f-client-score').value = '';
-  ['fp-gestao','fp-comercial','fp-digital','fp-automacao','fp-pessoas','fp-expansao'].forEach(function(id){
+  ['fp-agendamento','fp-financeira','fp-fidelizacao','fp-captacao','fp-digital','fp-automacao','fp-equipe','fp-experiencia','fp-crescimento'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.value='10';
   });
 }
@@ -1798,8 +1827,8 @@ function renderLeadList() {
     return;
   }
 
-  var gradients = ['linear-gradient(135deg,#1c8fec,#29a3e6)','linear-gradient(135deg,#b512b9,#6c23a9)','linear-gradient(135deg,#6483d3,#1c8fec)','linear-gradient(135deg,#d155b5,#b512b9)'];
-  var nichoNomes = {estetica:'Estética & Beleza',saude:'Saúde & Clínicas',escritorio:'Escritório & Serviços',liberal:'Profissional Liberal',imobiliaria:'Imobiliária & Corretores',comercial:'Comércio & Varejo'};
+  // avatars now use BEAUTY_SEGMENTS
+  var nichoNomes = {salao:'Salão de Beleza',clinica:'Clínica Estética',beauty:'Beauty Design',barbearia:'Barbearia',spa:'Spa & Bem-estar',studio:'Studio Especializado'};
 
   var html = '<div style="display:flex;flex-direction:column;gap:12px">';
   leads.forEach(function(lead, i) {
@@ -1810,7 +1839,7 @@ function renderLeadList() {
       '<div style="flex:1;min-width:0">'+
         '<div style="font-size:15px;font-weight:600;color:var(--text)">'+lead.nome+' · '+lead.empresa+'</div>'+
         '<div style="font-size:12px;color:var(--muted);margin-top:3px">'+lead.email+' · '+lead.whatsapp+'</div>'+
-        '<div style="font-size:12px;color:var(--muted);margin-top:2px">'+(nichoNomes[lead.nicho]||lead.nicho)+' · '+dateStr+'</div>'+
+        '<div style="font-size:12px;color:var(--muted);margin-top:2px">'+((BEAUTY_SEGMENTS[lead.nicho]||{}).nome||lead.nicho)+' · '+dateStr+'</div>'+
       '</div>'+
       '<div style="text-align:center;flex-shrink:0">'+
         '<div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--lume2)">'+lead.score+'</div>'+
@@ -1919,7 +1948,7 @@ function checkActivationOnLoad() {
   showScreen('activation');
   document.getElementById('act-client-name').textContent = lead.nome.split(' ')[0];
   document.getElementById('act-empresa').textContent = lead.empresa;
-  document.getElementById('act-nicho-badge').textContent = lead.nicho;
+  document.getElementById('act-nicho-badge').textContent = (BEAUTY_SEGMENTS[lead.nicho]||{nome:lead.nicho}).nome+' '+(BEAUTY_SEGMENTS[lead.nicho]||{icon:'💆'}).icon;
   document.getElementById('act-score-show').textContent = lead.score;
   document.getElementById('act-email-show').textContent = lead.email;
   document.getElementById('act-avatar').textContent = lead.nome.charAt(0);
